@@ -1,0 +1,7 @@
+.layout {
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5));
+    background-image: url('../../../assets/img/Linux.jpg');
+    background-size: cover;
+    background-position: center;
+
+}

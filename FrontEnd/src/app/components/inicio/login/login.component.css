@@ -1,0 +1,22 @@
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+h3{
+    font-family: 'Rowdies', cursive ;
+}
+
+.btn-login {
+    background-color: #f05f44;
+    border-color: #f05f44;
+}
+
+.layoutInicio {
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)); 
+    background-size: cover;
+    background-position: center;
+
+}

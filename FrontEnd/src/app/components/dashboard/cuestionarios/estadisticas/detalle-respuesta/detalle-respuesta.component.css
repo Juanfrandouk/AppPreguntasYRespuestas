@@ -1,0 +1,16 @@
+.material-icons {
+    float: right;
+    font-size: 25px;
+    margin-left: -25px;
+}
+
+
+.correct {
+    color: #17a2b8;
+}
+
+.incorrect {
+
+    color: #da2d2d;
+}
+
