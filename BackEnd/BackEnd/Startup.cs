@@ -19,6 +19,7 @@ using BackEnd.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.OpenApi.Models;
 
 namespace BackEnd
 {
@@ -48,7 +49,7 @@ namespace BackEnd
             services.AddScoped<ILoginRepository, LoginRepository>();
             services.AddScoped<ICuestionarioRepository, CuestionarioRepository>();
             services.AddScoped<IRespuestaCuestionarioRepository, RespuestaCuestionarioRepository>();
-
+            AddSwagger(services);
             //Cors
             services.AddCors(options => options.AddPolicy("AllowWebapp",
                 builder => builder.AllowAnyOrigin()
@@ -74,9 +75,22 @@ namespace BackEnd
 
         }
 
+        private static void AddSwagger(IServiceCollection services)
+        {
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo { Version = "v1", Title = "ToDo API" });
+            });
+        }
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+             });
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
