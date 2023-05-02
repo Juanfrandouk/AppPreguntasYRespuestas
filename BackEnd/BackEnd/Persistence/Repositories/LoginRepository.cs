@@ -22,10 +22,20 @@ namespace BackEnd.Persistence.Repositories
         public async Task<Usuario> ValidateUser(Usuario usuario)
         {
 
-            var user = await _context.Usuario.Where(x => x.NombreUsuario == usuario.NombreUsuario &&
+            try
+            {
+                var user = await _context.Usuario.Where(x => x.NombreUsuario == usuario.NombreUsuario &&
                                                     x.Password == usuario.Password).FirstOrDefaultAsync();
+                return user;
+            }
+            catch (Exception ex)
+            {
+                var user = new Usuario();
+                return user;
+            }
 
-            return user;
+
+
         }
     }
 }

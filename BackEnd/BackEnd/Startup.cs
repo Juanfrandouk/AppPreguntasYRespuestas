@@ -13,13 +13,14 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using BackEnd.Domain.IRepositories;
 using BackEnd.Persistence.Repositories;
-using BackEnd.Domain.IRepositories;
+
 using BackEnd.Domain.IServices;
 using BackEnd.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using Serilog.Context;
 
 namespace BackEnd
 {
@@ -90,7 +91,7 @@ namespace BackEnd
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-             });
+            });
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -101,6 +102,12 @@ namespace BackEnd
             app.UseAuthentication();
 
             app.UseAuthorization();
+            app.Use(async (httpContext, next) =>
+            {
+                var username = httpContext.User.Identity.IsAuthenticated ? httpContext.User.Identity.Name : "anonymous";
+                LogContext.PushProperty("UserName", username);
+                await next.Invoke();
+            });
 
             app.UseEndpoints(endpoints =>
             {

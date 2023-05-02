@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,9 +19,12 @@ namespace BackEnd.Controllers
     public class CuestionarioController : ControllerBase
     {
         private readonly ICuestionarioService _cuestionarioService;
-        public CuestionarioController(ICuestionarioService cuestionarioService)
+        private readonly ILogger _ilogger;
+        public CuestionarioController(ICuestionarioService cuestionarioService,
+                                      ILogger<CuestionarioController> ilogger)
         {
             _cuestionarioService = cuestionarioService;
+            _ilogger = ilogger;
         }
 
         [HttpPost]
@@ -29,6 +33,8 @@ namespace BackEnd.Controllers
         {
             try
             {
+                _ilogger.LogInformation("Cuestionario log");
+                Serilog.Log.Information("Called BackEnd");
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
                 int idUsuario = JwtConfigurator.GetTokenIdUsuario(identity);
                 cuestionario.UsuarioId = idUsuario;
@@ -39,7 +45,7 @@ namespace BackEnd.Controllers
             }
             catch (Exception ex)
             {
-
+                _ilogger.LogWarning("Cuetionario Post" + ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -51,6 +57,8 @@ namespace BackEnd.Controllers
         {
             try
             {
+                _ilogger.LogInformation("Cuestionario log");
+                Serilog.Log.Information("Called BackEnd");
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
                 int idUsuario = JwtConfigurator.GetTokenIdUsuario(identity);
                 var listCuestionarios = await _cuestionarioService.GetListCuestionarioByUser(idUsuario);
@@ -62,6 +70,7 @@ namespace BackEnd.Controllers
             }
             catch (Exception ex)
             {
+                _ilogger.LogWarning("Cuetionario Post" + ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -110,19 +119,22 @@ namespace BackEnd.Controllers
         [HttpGet]
         public async Task<IActionResult> GetListCuestionarios()
         {
+            Serilog.Log.Information("Called BackEnd => GetListCuestionarios");
+
             try
             {
                 List<Cuestionario> listCuestionarios = await _cuestionarioService.GetListCuestionarios();
                 if (listCuestionarios.Count == 0)
                 {
+
                     return BadRequest(new { message = "No existe cuestionario registrado en este momento" });
                 }
                 return Ok(listCuestionarios);
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                Serilog.Log.Error("Error Called BackEnd => GetListCuestionarios error details: {0}", ex);
                 return BadRequest(new { message = "Cuestionario no encontrado" });
             }
         }
